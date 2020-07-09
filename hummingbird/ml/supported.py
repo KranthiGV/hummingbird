@@ -24,12 +24,16 @@ LinearRegression,
 LinearSVC,
 LogisticRegression,
 LogisticRegressionCV,
+MaxAbsScaler,
+MinMaxScaler,
 Normalizer,
 RandomForestClassifier,
 RandomForestRegressor,
+RobustScaler,
 TreeEnsembleClassifier,
 TreeEnsembleRegressor,
 SGDClassifier,
+StandardScaler,
 
 LGBMClassifier,
 LGBMRegressor,
@@ -38,7 +42,7 @@ XGBClassifier,
 XGBRegressor
 """
 from .exceptions import MissingConverter
-from ._utils import torch_installed, sklearn_installed, lightgbm_installed, xgboost_installed, onnx_installed
+from ._utils import torch_installed, sklearn_installed, lightgbm_installed, xgboost_installed, onnx_runtime_installed
 
 
 def _build_sklearn_operator_list():
@@ -75,7 +79,7 @@ def _build_sklearn_operator_list():
         from sklearn.svm import LinearSVC, SVC, NuSVC
 
         # Preprocessing
-        from sklearn.preprocessing import Normalizer
+        from sklearn.preprocessing import MaxAbsScaler, MinMaxScaler, Normalizer, RobustScaler, StandardScaler
 
         return [
             # Trees
@@ -99,7 +103,11 @@ def _build_sklearn_operator_list():
             NuSVC,
             SVC,
             # Preprocessing
+            MaxAbsScaler,
+            MinMaxScaler,
             Normalizer,
+            RobustScaler,
+            StandardScaler,
         ]
 
     return []
@@ -122,9 +130,9 @@ def _build_lightgbm_operator_list():
     List all suported LightGBM (Sklearn API) operators.
     """
     if lightgbm_installed():
-        from lightgbm import LGBMClassifier, LGBMRegressor
+        from lightgbm import LGBMClassifier, LGBMRanker, LGBMRegressor
 
-        return [LGBMClassifier, LGBMRegressor]
+        return [LGBMClassifier, LGBMRanker, LGBMRegressor]
 
     return []
 
@@ -134,7 +142,7 @@ def _build_onnxml_operator_list():
     """
     List all suported ONNXML operators.
     """
-    if onnx_installed():
+    if onnx_runtime_installed():
         return [
             # Tree-based models.
             "TreeEnsembleClassifier",
@@ -155,7 +163,7 @@ def _build_backend_map():
         backends.add(torch.__name__)
         backends.add("py" + torch.__name__)  # For compatibility with earlier versions.
 
-    if onnx_installed():
+    if onnx_runtime_installed():
         import onnx
 
         backends.add(onnx.__name__)

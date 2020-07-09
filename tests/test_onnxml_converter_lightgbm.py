@@ -2,6 +2,7 @@
 Tests lightgbm->onnxmltools->hb conversion for lightgbm models.
 """
 import unittest
+import warnings
 
 import sys
 import os
@@ -11,11 +12,11 @@ from onnxconverter_common.data_types import FloatTensorType
 
 from hummingbird.ml import convert
 from hummingbird.ml import constants
-from hummingbird.ml._utils import onnx_ml_tools_installed, onnx_installed, lightgbm_installed
+from hummingbird.ml._utils import onnx_ml_tools_installed, onnx_runtime_installed, lightgbm_installed
 
 if lightgbm_installed():
     import lightgbm as lgb
-if onnx_installed():
+if onnx_runtime_installed():
     import onnxruntime as ort
 if onnx_ml_tools_installed():
     from onnxmltools.convert import convert_lightgbm
@@ -77,9 +78,10 @@ class TestONNXConverterLightGBM(unittest.TestCase):
 
     # Check that ONNXML models can only target the ONNX backend.
     @unittest.skipIf(
-        not (onnx_ml_tools_installed() and onnx_installed()), reason="ONNXML test require ONNX, ORT and ONNXMLTOOLS"
+        not (onnx_ml_tools_installed() and onnx_runtime_installed()), reason="ONNXML test require ONNX, ORT and ONNXMLTOOLS"
     )
     def test_lightgbm_pytorch(self):
+        warnings.filterwarnings("ignore")
         X = [[0, 1], [1, 1], [2, 0]]
         X = np.array(X, dtype=np.float32)
         y = np.array([100, -10, 50], dtype=np.float32)
@@ -95,9 +97,10 @@ class TestONNXConverterLightGBM(unittest.TestCase):
 
     # Check conveter with extra configs.
     @unittest.skipIf(
-        not (onnx_ml_tools_installed() and onnx_installed()), reason="ONNXML test require ONNX, ORT and ONNXMLTOOLS"
+        not (onnx_ml_tools_installed() and onnx_runtime_installed()), reason="ONNXML test require ONNX, ORT and ONNXMLTOOLS"
     )
     def test_lightgbm_pytorch_extra_config(self):
+        warnings.filterwarnings("ignore")
         X = [[0, 1], [1, 1], [2, 0]]
         X = np.array(X, dtype=np.float32)
         y = np.array([100, -10, 50], dtype=np.float32)
@@ -120,9 +123,10 @@ class TestONNXConverterLightGBM(unittest.TestCase):
 
     # Basic regression test.
     @unittest.skipIf(
-        not (onnx_ml_tools_installed() and onnx_installed()), reason="ONNXML test require ONNX, ORT and ONNXMLTOOLS"
+        not (onnx_ml_tools_installed() and onnx_runtime_installed()), reason="ONNXML test require ONNX, ORT and ONNXMLTOOLS"
     )
     def test_lgbm_onnxml_model_regressor(self):
+        warnings.filterwarnings("ignore")
         n_features = 28
         n_total = 100
         X = np.random.rand(n_total, n_features)
@@ -136,9 +140,10 @@ class TestONNXConverterLightGBM(unittest.TestCase):
 
     # Regression test with 3 estimators (taken from ONNXMLTOOLS).
     @unittest.skipIf(
-        not (onnx_ml_tools_installed() and onnx_installed()), reason="ONNXML test require ONNX, ORT and ONNXMLTOOLS"
+        not (onnx_ml_tools_installed() and onnx_runtime_installed()), reason="ONNXML test require ONNX, ORT and ONNXMLTOOLS"
     )
     def test_lightgbm_regressor(self):
+        warnings.filterwarnings("ignore")
         X = [[0, 1], [1, 1], [2, 0]]
         X = np.array(X, dtype=np.float32)
         y = np.array([100, -10, 50], dtype=np.float32)
@@ -148,9 +153,10 @@ class TestONNXConverterLightGBM(unittest.TestCase):
 
     # Regression test with 1 estimator (taken from ONNXMLTOOLS).
     @unittest.skipIf(
-        not (onnx_ml_tools_installed() and onnx_installed()), reason="ONNXML test require ONNX, ORT and ONNXMLTOOLS"
+        not (onnx_ml_tools_installed() and onnx_runtime_installed()), reason="ONNXML test require ONNX, ORT and ONNXMLTOOLS"
     )
     def test_lightgbm_regressor1(self):
+        warnings.filterwarnings("ignore")
         model = lgb.LGBMRegressor(n_estimators=1, min_child_samples=1)
         X = [[0, 1], [1, 1], [2, 0]]
         X = np.array(X, dtype=np.float32)
@@ -160,9 +166,10 @@ class TestONNXConverterLightGBM(unittest.TestCase):
 
     # Regression test with 2 estimators (taken from ONNXMLTOOLS).
     @unittest.skipIf(
-        not (onnx_ml_tools_installed() and onnx_installed()), reason="ONNXML test require ONNX, ORT and ONNXMLTOOLS"
+        not (onnx_ml_tools_installed() and onnx_runtime_installed()), reason="ONNXML test require ONNX, ORT and ONNXMLTOOLS"
     )
     def test_lightgbm_regressor2(self):
+        warnings.filterwarnings("ignore")
         model = lgb.LGBMRegressor(n_estimators=2, max_depth=1, min_child_samples=1)
         X = [[0, 1], [1, 1], [2, 0]]
         X = np.array(X, dtype=np.float32)
@@ -172,9 +179,10 @@ class TestONNXConverterLightGBM(unittest.TestCase):
 
     # Regression test with gbdt boosting type (taken from ONNXMLTOOLS).
     @unittest.skipIf(
-        not (onnx_ml_tools_installed() and onnx_installed()), reason="ONNXML test require ONNX, ORT and ONNXMLTOOLS"
+        not (onnx_ml_tools_installed() and onnx_runtime_installed()), reason="ONNXML test require ONNX, ORT and ONNXMLTOOLS"
     )
     def test_lightgbm_booster_regressor(self):
+        warnings.filterwarnings("ignore")
         X = [[0, 1], [1, 1], [2, 0]]
         X = np.array(X, dtype=np.float32)
         y = [0, 1, 1.1]
@@ -187,9 +195,10 @@ class TestONNXConverterLightGBM(unittest.TestCase):
 
     # Binary classication test.
     @unittest.skipIf(
-        not (onnx_ml_tools_installed() and onnx_installed()), reason="ONNXML test require ONNX, ORT and ONNXMLTOOLS"
+        not (onnx_ml_tools_installed() and onnx_runtime_installed()), reason="ONNXML test require ONNX, ORT and ONNXMLTOOLS"
     )
     def test_lgbm_onnxml_model_binary(self):
+        warnings.filterwarnings("ignore")
         n_features = 28
         n_total = 100
         np.random.seed(0)
@@ -204,9 +213,10 @@ class TestONNXConverterLightGBM(unittest.TestCase):
 
     # Binary classification test with 3 estimators (taken from ONNXMLTOOLS).
     @unittest.skipIf(
-        not (onnx_ml_tools_installed() and onnx_installed()), reason="ONNXML test require ONNX, ORT and ONNXMLTOOLS"
+        not (onnx_ml_tools_installed() and onnx_runtime_installed()), reason="ONNXML test require ONNX, ORT and ONNXMLTOOLS"
     )
     def test_lightgbm_classifier(self):
+        warnings.filterwarnings("ignore")
         model = lgb.LGBMClassifier(n_estimators=3, min_child_samples=1)
         X = [[0, 1], [1, 1], [2, 0]]
         X = np.array(X, dtype=np.float32)
@@ -216,9 +226,10 @@ class TestONNXConverterLightGBM(unittest.TestCase):
 
     # Binary classification test with 3 estimators zipmap (taken from ONNXMLTOOLS).
     @unittest.skipIf(
-        not (onnx_ml_tools_installed() and onnx_installed()), reason="ONNXML test require ONNX, ORT and ONNXMLTOOLS"
+        not (onnx_ml_tools_installed() and onnx_runtime_installed()), reason="ONNXML test require ONNX, ORT and ONNXMLTOOLS"
     )
     def test_lightgbm_classifier_zipmap(self):
+        warnings.filterwarnings("ignore")
         X = [[0, 1], [1, 1], [2, 0], [1, 2]]
         X = np.array(X, dtype=np.float32)
         y = [0, 1, 0, 1]
@@ -228,9 +239,10 @@ class TestONNXConverterLightGBM(unittest.TestCase):
 
     # Binary classification test with 3 estimators and selecting boosting type (taken from ONNXMLTOOLS).
     @unittest.skipIf(
-        not (onnx_ml_tools_installed() and onnx_installed()), reason="ONNXML test require ONNX, ORT and ONNXMLTOOLS"
+        not (onnx_ml_tools_installed() and onnx_runtime_installed()), reason="ONNXML test require ONNX, ORT and ONNXMLTOOLS"
     )
     def test_lightgbm_booster_classifier(self):
+        warnings.filterwarnings("ignore")
         X = [[0, 1], [1, 1], [2, 0], [1, 2]]
         X = np.array(X, dtype=np.float32)
         y = [0, 1, 0, 1]
@@ -240,9 +252,10 @@ class TestONNXConverterLightGBM(unittest.TestCase):
 
     # Binary classification test with 3 estimators and selecting boosting type zipmap (taken from ONNXMLTOOLS).
     @unittest.skipIf(
-        not (onnx_ml_tools_installed() and onnx_installed()), reason="ONNXML test require ONNX, ORT and ONNXMLTOOLS"
+        not (onnx_ml_tools_installed() and onnx_runtime_installed()), reason="ONNXML test require ONNX, ORT and ONNXMLTOOLS"
     )
     def test_lightgbm_booster_classifier_zipmap(self):
+        warnings.filterwarnings("ignore")
         X = [[0, 1], [1, 1], [2, 0], [1, 2]]
         X = np.array(X, dtype=np.float32)
         y = [0, 1, 0, 1]
@@ -252,9 +265,10 @@ class TestONNXConverterLightGBM(unittest.TestCase):
 
     # Multiclass classification test.
     @unittest.skipIf(
-        not (onnx_ml_tools_installed() and onnx_installed()), reason="ONNXML test require ONNX, ORT and ONNXMLTOOLS"
+        not (onnx_ml_tools_installed() and onnx_runtime_installed()), reason="ONNXML test require ONNX, ORT and ONNXMLTOOLS"
     )
     def test_lgbm_onnxml_model_multi(self):
+        warnings.filterwarnings("ignore")
         n_features = 28
         n_total = 100
         np.random.seed(0)
@@ -269,9 +283,10 @@ class TestONNXConverterLightGBM(unittest.TestCase):
 
     # Multiclass classification test with 3 estimators (taken from ONNXMLTOOLS).
     @unittest.skipIf(
-        not (onnx_ml_tools_installed() and onnx_installed()), reason="ONNXML test require ONNX, ORT and ONNXMLTOOLS"
+        not (onnx_ml_tools_installed() and onnx_runtime_installed()), reason="ONNXML test require ONNX, ORT and ONNXMLTOOLS"
     )
     def test_lightgbm_classifier_multi(self):
+        warnings.filterwarnings("ignore")
         model = lgb.LGBMClassifier(n_estimators=3, min_child_samples=1)
         X = [[0, 1], [1, 1], [2, 0], [0.5, 0.5], [1.1, 1.1], [2.1, 0.1]]
         X = np.array(X, dtype=np.float32)
@@ -281,12 +296,13 @@ class TestONNXConverterLightGBM(unittest.TestCase):
 
     # Multiclass classification test with 3 estimators and selecting boosting type (taken from ONNXMLTOOLS).
     @unittest.skipIf(
-        not (onnx_ml_tools_installed() and onnx_installed()), reason="ONNXML test require ONNX, ORT and ONNXMLTOOLS"
+        not (onnx_ml_tools_installed() and onnx_runtime_installed()), reason="ONNXML test require ONNX, ORT and ONNXMLTOOLS"
     )
     @unittest.skipIf(
         True, reason='ONNXMLTOOLS fails with "ValueError: unsupported LightGbm objective: multiclass num_class:3"'
     )
     def test_lightgbm_booster_multi_classifier(self):
+        warnings.filterwarnings("ignore")
         X = [[0, 1], [1, 1], [2, 0], [1, 2], [-1, 2], [1, -2]]
         X = np.array(X, dtype=np.float32)
         y = [0, 1, 0, 1, 2, 2]
