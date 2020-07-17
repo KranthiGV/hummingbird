@@ -20,4 +20,4 @@ ENV DEBIAN_FRONTEND=dialog
 #
 # Install extras for development
 #
-RUN pip3 --disable-pip-version-check --no-cache-dir install hummingbird-ml[docs,tests,extra] autopep8
+RUN pip3 --disable-pip-version-check --no-cache-dir install hummingbird-ml[docs,tests,onnx,extra] autopep8

@@ -35,7 +35,7 @@ The simplest setup is:
 mkdir hummingbird
 cd hummingbird
 git clone https://github.com/microsoft/hummingbird.git .
-pip install -e .[docs,tests,extra]
+pip install -e .[docs,tests,onnx,extra]
 ```
 On Windows, the last line above must also contain `-f https://download.pytorch.org/whl/torch_stable.html`. (This is required because PyTorch version for Windows is not up to date.)
 
